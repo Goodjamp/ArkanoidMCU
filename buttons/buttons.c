@@ -4,7 +4,7 @@
 #include "buttons.h"
 
 #define DEBOUNCE_CNT           3
-#define POST_PRESS_TIMEOUT_CNT 25
+#define POST_PRESS_TIMEOUT_CNT 3
 
 const uint32_t pressTypeTimings[PRESS_TYPE_CNT] = {
     [PRESS_SHORT]     = 0,

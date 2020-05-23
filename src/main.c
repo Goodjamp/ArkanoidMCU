@@ -11,6 +11,14 @@
 #include "buttons.h"
 #include "buttonsHall.h"
 
+#include "ArkanoidGameSpace.h"
+#include "images.h"
+
+#define GAME_SPACE_W 120
+#define GAME_SPACE_H 180
+
+uint8_t gameSpaceFrame[AREA_WIDTH * AREA_HEIGHT * 2];
+FrameDescr gameSpaceFrameDesc;
 void buttonShortCb0(void);
 void buttonShortCb1(void);
 void buttonShortCb2(void);
@@ -55,30 +63,32 @@ const St7789InitStruct st7789InitStruct = {
     .rowEndAddress   = 240 - 1,
 };
 
-void buttonShortCb0(void)
+void buttonShortCb4(void) // Left
 {
-    uint8_t event = 1;
+    arkGameSpaceButtonAction(ARKANOID_BUTTON_LEFT);
+}
+
+void buttonShortCb0(void) // Right
+{
+    arkGameSpaceButtonAction(ARKANOID_BUTTON_RIGHT);
+}
+
+void buttonShortCb2(void) // Sell
+{
+    arkGameSpaceButtonAction(ARKANOID_BUTTON_SELL);
 }
 
 void buttonShortCb1(void)
 {
-    uint8_t event = 1;
+    //uint8_t event = 1;
 }
 
-void buttonShortCb2(void)
-{
-    uint8_t event = 1;
-}
 
 void buttonShortCb3(void)
 {
-    uint8_t event = 1;
+    //uint8_t event = 1;
 }
 
-void buttonShortCb4(void)
-{
-    uint8_t event = 1;
-}
 
 void initL2(void)
 {
@@ -100,35 +110,42 @@ void buttonsConfig(void)
                       readButton);
 }
 
-#include "images.h"
-
-uint8_t gameSpaceFrame[120 * 180 * 2];
-FrameDescr gameSpaceFrameDesc;
-#define GAME_SPACE_W 120
-#define GAME_SPACE_H 180
-
-#define ELEMENT_W 12
-#define ELEMENT_H 6
-
-void createRectangle(uint8_t cnt)
+void addImage(uint16_t x, uint16_t y, const uint8_t image[], uint32_t imageWidth, uint32_t imageHeight)
 {
-
+    frameSetPosition(&gameSpaceFrameDesc, x, y);
+    frameAddImage(&gameSpaceFrameDesc, image, imageHeight, imageWidth, true);
 }
+
+void clearFrame(void) {
+    //frameClear(&gameSpaceFrameDesc);
+    frameSetPosition(&gameSpaceFrameDesc, 0, 0);
+    frameAddImage(&gameSpaceFrameDesc, gameArea, AREA_HEIGHT, AREA_WIDTH, false);
+}
+
+void showFrame(void)
+{
+    st7789WriteFrame(gameSpaceFrame, sizeof(gameSpaceFrame));
+}
+
+static const ArkanoidCB arkanoidCB = {
+    .ClearSpace = clearFrame,
+    .AddImage   = addImage,
+    .ShowFrame  = showFrame,
+};
 
 int main(void)
 {
-    uint8_t switchScreenCnt = 0;
-    bool isEnable = false;
     uint32_t cnt = 0;
     initL2();
     initSPI(NULL);
     buttonsConfig();
     st7789Init(st7789Cb, st7789InitStruct);
     st7789WriteFrame((uint8_t*)imBackground, sizeof(imBackground));
-    st7789SetArea(20, 20, GAME_SPACE_W, GAME_SPACE_H);
-
+    st7789SetArea(20, 20, AREA_WIDTH, AREA_HEIGHT);
+    arkGameSpaceInit(arkanoidCB);
     /*Init screen */
     frameInit(&gameSpaceFrameDesc, gameSpaceFrame, GAME_SPACE_H, GAME_SPACE_W);
+    /*
     frameAddImage(&gameSpaceFrameDesc, gameArea, GAME_SPACE_H, GAME_SPACE_W, false);
 
     frameSetPosition(&gameSpaceFrameDesc, 40, 40);
@@ -146,8 +163,15 @@ int main(void)
 
     st7789WriteFrame(gameSpaceFrame, sizeof(gameSpaceFrame));
     uint16_t yMax = ELEMENT_H;
+    */
     while(1)
     {
+         while(cnt < 128) {
+             cnt++;
+         }
+        buttonsProcessing();
+        arkGameSpaceProcessing();
+        /*
         buttonsProcessing();
         yMax += ELEMENT_H;
         if(yMax >= (GAME_SPACE_H - 1)) {
@@ -179,5 +203,6 @@ int main(void)
              GPIO_SetBits(GPIOA, GPIO_Pin_1);
              isEnable = true;
          }
+         */
     }
 }

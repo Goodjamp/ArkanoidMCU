@@ -101,11 +101,11 @@ union {
                                      R8G8B8Format.colorFormatData.red,
                                      frameRed);
                 frameGreen = mixCollor(R8G8B8Format.colorFormatData.alpha,
-                                     R8G8B8Format.colorFormatData.green,
-                                     frameGreen);
+                                       R8G8B8Format.colorFormatData.green,
+                                       frameGreen);
                 frameBlue = mixCollor(R8G8B8Format.colorFormatData.alpha,
-                                     R8G8B8Format.colorFormatData.blue,
-                                     frameBlue);
+                                      R8G8B8Format.colorFormatData.blue,
+                                      frameBlue);
                 colors8ToR5G6B5(&frameArray[y + inFrame->y][x + inFrame->x],
                                 frameRed,
                                 frameGreen,
