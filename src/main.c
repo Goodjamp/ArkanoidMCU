@@ -14,10 +14,13 @@
 #include "ArkanoidGameSpace.h"
 #include "images.h"
 
-#define GAME_SPACE_W 120
-#define GAME_SPACE_H 180
+#define GAME_SPACE_W 126
+#define GAME_SPACE_H 186
+#define GAME_FRAME_X 18
+#define GAME_FRAME_Y 18
+#define GAME_FRAME_R 3
 
-uint8_t gameSpaceFrame[AREA_WIDTH * AREA_HEIGHT * 2];
+uint8_t gameSpaceFrame[GAME_SPACE_W * GAME_SPACE_H * 2];
 FrameDescr gameSpaceFrameDesc;
 void buttonShortCb0(void);
 void buttonShortCb1(void);
@@ -119,7 +122,7 @@ void addImage(uint16_t x, uint16_t y, const uint8_t image[], uint32_t imageWidth
 void clearFrame(void) {
     //frameClear(&gameSpaceFrameDesc);
     frameSetPosition(&gameSpaceFrameDesc, 0, 0);
-    frameAddImage(&gameSpaceFrameDesc, gameArea, AREA_HEIGHT, AREA_WIDTH, false);
+    frameAddImage(&gameSpaceFrameDesc, gameArea, GAME_SPACE_H, GAME_SPACE_W, false);
 }
 
 void showFrame(void)
@@ -141,7 +144,7 @@ int main(void)
     buttonsConfig();
     st7789Init(st7789Cb, st7789InitStruct);
     st7789WriteFrame((uint8_t*)imBackground, sizeof(imBackground));
-    st7789SetArea(20, 20, AREA_WIDTH, AREA_HEIGHT);
+    st7789SetArea(GAME_FRAME_X, GAME_FRAME_Y, GAME_SPACE_W, GAME_SPACE_H);
     arkGameSpaceInit(arkanoidCB);
     /*Init screen */
     frameInit(&gameSpaceFrameDesc, gameSpaceFrame, GAME_SPACE_H, GAME_SPACE_W);
